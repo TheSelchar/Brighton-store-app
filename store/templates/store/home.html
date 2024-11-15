@@ -8,86 +8,98 @@
 </head>
 <body>
     <div class="container mt-4">
-        <h1 class="mb-4">Products</h1>
-        
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Image</th>
-                    <th>Title</th>
-                    <th>Category</th>
-                    <th>Price</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for product in page_obj %}
-                <tr>
-                    <td>{{ product.id }}</td>
-                    <td>
-                        <!-- Add data attributes and pointer cursor to image -->
-                        <img src="{{ product.image }}" 
-                             alt="{{ product.title }}" 
-                             style="max-height: 50px; cursor: pointer;"
-                             data-bs-toggle="modal" 
-                             data-bs-target="#productModal{{ product.id }}"
-                             onclick="loadProductDetails({{ product.id }})">
-                    </td>
-                    <td>{{ product.title }}</td>
-                    <td>{{ product.category }}</td>
-                    <td>${{ product.price }}</td>
-                </tr>
-        
-                <!-- Modal for each product -->
-                <div class="modal fade" id="productModal{{ product.id }}" tabindex="-1" aria-labelledby="productModalLabel{{ product.id }}" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="productModalLabel{{ product.id }}">Product Details</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="card">
-                                    <img src="{{ product.image }}" class="card-img-top" alt="{{ product.title }}" style="max-height: 300px; object-fit: contain;">
-                                    <div class="card-body">
-                                        <h5 class="card-title">{{ product.title }}</h5>
-                                        <p class="card-text" id="productDescription{{ product.id }}">Loading description...</p>
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <span class="badge bg-primary">{{ product.category }}</span>
-                                            <h5 class="text-success mb-0">${{ product.price }}</h5>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                      <h3>Products</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        {% comment %} <th>ID</th> {% endcomment %}
+                                        <th>Image</th>
+                                        <th>Title</th>
+                                        <th>Category</th>
+                                        <th>Price</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for product in page_obj %}
+                                    <tr>
+                                        {% comment %} <td>{{ product.id }}</td> {% endcomment %}
+                                        <td>
+                                            <!-- Add data attributes and pointer cursor to image -->
+                                            <img src="{{ product.image }}" 
+                                                alt="{{ product.title }}" 
+                                                style="max-height: 50px; cursor: pointer;"
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#productModal{{ product.id }}"
+                                                onclick="loadProductDetails({{ product.id }})">
+                                        </td>
+                                        <td>{{ product.title }}</td>
+                                        <td>{{ product.category }}</td>
+                                        <td>${{ product.price }}</td>
+                                    </tr>
+                            
+                                    <!-- Modal for each product -->
+                                    <div class="modal fade" id="productModal{{ product.id }}" tabindex="-1" aria-labelledby="productModalLabel{{ product.id }}" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="productModalLabel{{ product.id }}">Product Details</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="card">
+                                                        <img src="{{ product.image }}" class="card-img-top" alt="{{ product.title }}" style="max-height: 300px; object-fit: contain;">
+                                                        <div class="card-body">
+                                                            <h5 class="card-title">{{ product.title }}</h5>
+                                                            <p class="card-text" id="productDescription{{ product.id }}">Loading description...</p>
+                                                            <div class="d-flex justify-content-between align-items-center">
+                                                                <span class="badge bg-primary">{{ product.category }}</span>
+                                                                <h5 class="text-success mb-0">${{ product.price }}</h5>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
                         </div>
                     </div>
+                    <div class="card-footer text-body-secondary">
+                      <!-- Pagination -->
+                        <nav>
+                            <ul class="pagination">
+                                {% if page_obj.has_previous %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                                    </li>
+                                {% endif %}
+
+                                {% for num in page_obj.paginator.page_range %}
+                                    <li class="page-item {% if num == page_obj.number %}active{% endif %}">
+                                        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                                    </li>
+                                {% endfor %}
+
+                                {% if page_obj.has_next %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                    </div>
                 </div>
-                {% endfor %}
-            </tbody>
-        </table>
-
-        <!-- Pagination -->
-        <nav>
-            <ul class="pagination">
-                {% if page_obj.has_previous %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
-                    </li>
-                {% endif %}
-
-                {% for num in page_obj.paginator.page_range %}
-                    <li class="page-item {% if num == page_obj.number %}active{% endif %}">
-                        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
-                    </li>
-                {% endfor %}
-
-                {% if page_obj.has_next %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
-                    </li>
-                {% endif %}
-            </ul>
-        </nav>
+            </div>
+        </div>
     </div>
 
     <script>

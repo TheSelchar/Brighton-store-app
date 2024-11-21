@@ -1,6 +1,8 @@
 import requests
 from django.shortcuts import render
 from django.conf import settings
+from collections import Counter
+import json
 
 def home(request):
     try:
@@ -8,6 +10,17 @@ def home(request):
         response = requests.get(settings.BRIGHTON_FEED_URL)
         response.raise_for_status()
         stores = response.json()
+        
+        # Count stores by state
+        state_counts = Counter(store_data['state'] for store_id, store_data in stores.items())
+        
+        # Sort states alphabetically
+        sorted_state_counts = dict(sorted(state_counts.items()))
+        
+        # Print to terminal
+        print("\nStore counts by state:")
+        for state, count in sorted_state_counts.items():
+            print(f"{state}: {count}")
         
         # Create store list for template
         store_list = [
@@ -25,7 +38,8 @@ def home(request):
         ]
         
         return render(request, 'store/home.html', {
-            'stores': store_list
+            'stores': store_list,
+            'state_counts': json.dumps(sorted_state_counts)  # Pass to template for console logging
         })
         
     except requests.RequestException as e:

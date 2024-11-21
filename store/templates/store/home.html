@@ -88,5 +88,13 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Log store counts by state to browser console
+        const stateCounts = {{ state_counts|safe }};
+        console.log('Store counts by state:');
+        Object.entries(stateCounts).forEach(([state, count]) => {
+            console.log(`${state}: ${count}`);
+        });
+    </script>
 </body>
 </html>

@@ -40,8 +40,8 @@
         }
 
         .image-container {
-            width: 200px;
-            height: 200px;
+            /*width: 200px;
+            height: 200px;*/
             overflow: hidden;
         }
 
@@ -70,10 +70,10 @@
         {% else %}
             <div class="row">
                 {% for store in stores %}
-                    <div class="store-col d-flex justify-content-center">
+                    <div class="col-sm-4 col-md-2 col-justify-content-center">
                         <div class="store-item">
                             <a href="{{ store.viewstore_url }}" target="_blank" class="clickable">
-                                <div class="image-container">
+                                <div class="image-container img-thumbnail border-0">
                                     <img src="{{ store.image }}" alt="{{ store.name }}">
                                 </div>
                             </a>
